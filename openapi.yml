@@ -41,6 +41,24 @@ paths:
           $ref: "#/components/responses/401" 
         500:
           $ref: "#/components/responses/500"
+  /v1/books/transaction:
+    post:
+      tags:
+        - API
+      summary: transaction
+      parameters:
+        - $ref: "#/components/parameters/member_code"
+        - $ref: "#/components/parameters/book_code"
+        - $ref: "#/components/parameters/status"
+      responses:
+        200:
+          $ref: "#/components/responses/transactionList"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401" 
+        500:
+          $ref: "#/components/responses/500"
 components:
   securitySchemes:
     adminAuth:
@@ -150,18 +168,25 @@ components:
                 default: ""
                 minLength: 8
   parameters:
-    start:
+    member_code:
       in: query
-      name: start
+      name: member_code
       schema:
         type: string
       required: true
-    end:
+    book_code:
       in: query
-      name: end
+      name: book_code
       schema:
         type: string
       required: true
+    status:
+      in: query
+      name: status
+      schema:
+        type: string
+      required: true
+      description: return / order
     page:
       in: query
       name: page

@@ -24,7 +24,8 @@ func Router(db *gorm.DB) {
 	booksGroup := v1.Group("books")
 	{
 		bookController := book.NewController(db)
-		booksGroup.GET("list", bookController.List)
+		// booksGroup.GET("list", bookController.List)		
+		booksGroup.POST("transaction", bookController.Order)		
 	}
 	if err := router.Run(); err != nil {
 		log.Fatal(err)

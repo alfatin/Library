@@ -2,13 +2,17 @@ package repository
 
 import (
 	"library/domain/book/model"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type (
 	RepositoryInterface interface {
-		GetList() ([]model.Book, error)
+		GetList(selectParams []string, conditions *model.Book) ([]model.Book, error)
+		Take(selectParams []string, conditions *model.Book) (book model.Book, err error)
+		UpdateReturn(code string) error
+		UpdateBorrow(code string, borrowedBy string) error
 	}
 
 	repository struct {
@@ -22,7 +26,19 @@ func NewBookRepository(DB *gorm.DB) RepositoryInterface {
 	}
 }
 
-func (r *repository) GetList() ([]model.Book, error) {
+func (r *repository) GetList(selectParams []string, conditions *model.Book) ([]model.Book, error) {
 	var list []model.Book
-	return list, r.DB.Find(&list).Error
+	return list, r.DB.Debug().Select(selectParams).Find(&list, conditions).Error
+}
+
+func (r *repository) Take(selectParams []string, conditions *model.Book) (book model.Book, err error) {
+	return book, r.DB.Debug().Select(selectParams).Take(&book, conditions).Error
+}
+
+func (r *repository) UpdateReturn(code string) error {
+	return r.DB.Debug().Table("books").Where("code = ?", code).Updates(map[string]interface{}{"borrowed_by": nil, "date_borrowed": nil}).Error
+}
+
+func (r *repository) UpdateBorrow(code string, borrowedBy string) error {
+	return r.DB.Debug().Table("books").Where("code = ?", code).Updates(map[string]interface{}{"borrowed_by": borrowedBy, "date_borrowed": time.Now()}).Error
 }
