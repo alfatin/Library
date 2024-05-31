@@ -9,7 +9,7 @@ import (
 
 type (
 	RepositoryInterface interface {
-		GetList() ([]model.Member, error)
+		GetList() ([]model.List, error)
 		Take(selectParams []string, conditions *model.Member) (book model.Member, err error)
 		UpdateReturn(code string, date time.Time) error
 	}
@@ -25,9 +25,10 @@ func NewMemberRepository(DB *gorm.DB) RepositoryInterface {
 	}
 }
 
-func (r *repository) GetList() ([]model.Member, error) {
-	var list []model.Member
-	return list, r.DB.Find(&list).Error
+func (r *repository) GetList() ([]model.List, error) {
+	var list []model.List
+
+	return list, r.DB.Debug().Model(&model.Member{}).Select("members.name as name, COUNT(books.code) as quantity").Joins("LEFT JOIN books on members.code = books.borrowed_by").Group("members.name").Scan(&list).Error
 }
 
 func (r *repository) Take(selectParams []string, conditions *model.Member) (member model.Member, err error) {

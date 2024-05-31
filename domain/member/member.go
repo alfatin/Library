@@ -15,7 +15,7 @@ func NewMemberService(repository repository.RepositoryInterface) *Service {
 	}
 }
 
-func(s *Service) List() ([]model.Member, error) {
+func(s *Service) List() ([]model.List, error) {
 	data, err := s.Repository.GetList()
 	if err != nil {
 		return data, err
