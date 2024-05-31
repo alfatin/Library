@@ -1,0 +1,187 @@
+openapi: '3.0.2'
+info:
+  title: Library
+  version: '1.0' 
+servers:
+  - url: http://localhost:8080
+paths:
+  /:
+    get:
+      tags:
+        - Default Services
+      summary: Root
+      responses:
+        200:
+          $ref: "#/components/responses/200"
+  /v1/members/list:
+    get:
+      tags:
+        - Member Services
+      summary: List
+      responses:
+        200:
+          $ref: "#/components/responses/transactionList"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401" 
+        500:
+          $ref: "#/components/responses/500"
+components:
+  securitySchemes:
+    adminAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    globalFailureRes:
+      type: object
+      properties:
+        data:
+          type: string
+          nullable: true
+          default: null
+        message:
+          type: string
+          default: ""
+    globalSuccesRes:
+      type: object
+      properties:
+        data:
+          type: string
+          nullable: true
+          default: null
+        message:
+          type: string
+          default: OK
+  responses:
+    200:
+      description: OK
+      content:
+        application/json:
+          schema:
+           $ref: "#/components/schemas/globalSuccesRes"
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:  
+            $ref: "#/components/schemas/globalFailureRes"
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/globalFailureRes"
+    500:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema: 
+            $ref: "#/components/schemas/globalFailureRes"
+    transactionList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              meta:
+                type: object
+                items:
+                  type: object
+                  properties:
+                    status:
+                      type: boolean
+                      default: true
+                    code:
+                      type: integer
+                      default: 200
+                    message:
+                      type: string
+                      default: ""
+                    current_page":
+                      type: integer
+                      default: "1"
+                    next_page:
+                      type: boolean
+                      default: false
+                    prev_page":
+                      type: boolean
+                      default: false
+                    per_page:
+                      type: integer
+                    page_count: 
+                      type: integer
+                    total_count": 
+                      type: integer
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    merchant_name:
+                      type: string
+                      default: ""
+                    outlet_name:
+                      type: string
+                      default: ""
+                    omset:
+                      type: string
+                      default: ""
+              message:
+                type: string
+                default: OK
+  requestBodies:
+    authenticationSignIn:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_name:
+                type: string
+                default: ""
+              password:
+                type: string
+                default: ""
+                minLength: 8
+    vocabCreat:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              indonesian:
+                type: string
+                default: ""
+              malay:
+                type: string
+                default: ""
+  parameters:
+    start:
+      in: query
+      name: start
+      schema:
+        type: string
+      required: true
+    end:
+      in: query
+      name: end
+      schema:
+        type: string
+      required: true
+    page:
+      in: query
+      name: page
+      schema:
+        type: string
+    limit:
+      in: query
+      name: limit
+      schema:
+        type: string
+    outlet:
+      in: query
+      name: outlet
+      schema:
+        type: boolean

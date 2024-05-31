@@ -1,21 +1,17 @@
 package main
 
 import (
+	"library/config"
 	"library/database"
 	"log"
 )
 
 func main() {
-	db, err := database.Open()
-	if err != nil {
-		log.Fatal(err)
-	}
+	gormDb := database.Open()
 	defer func() {
-		if err = db.SqlDb.Close(); err != nil {
+		if err := database.SqlDb.Close(); err != nil {
 			log.Fatal(err)
 		}
 	}()
-	// if err := router.Run(db); err != nil {
-	// 	log.Fatal(err)
-	// }
+	config.Router(gormDb)
 }
