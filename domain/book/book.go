@@ -24,13 +24,17 @@ func NewBookService(repository repository.RepositoryInterface, memberRepo member
 	}
 }
 
-// func (s *Service) List() ([]model.Book, error) {
-// 	data, err := s.Repository.GetList()
-// 	if err != nil {
-// 		return data, err
-// 	}
-// 	return data, nil
-// }
+func (s *Service) List() (model.List, error) {
+	data, err := s.Repository.GetListExcept()
+	list := model.List{
+		Quantity: len(data),
+		Book: data,
+	}
+	if err != nil {
+		return list, err
+	}
+	return list, nil
+}
 
 func (s *Service) Order(req *model.OrderReq) (statusCode int, err error) {
 	data, err := s.Repository.Take([]string{"*"}, &model.Book{Code: req.BookCode})
@@ -58,7 +62,7 @@ func (s *Service) Order(req *model.OrderReq) (statusCode int, err error) {
 	}
 
 	if req.Status == "return" {
-		diff := time.Since(data.DateBorrowed)
+		diff := time.Since(*data.DateBorrowed)
 		days := int(diff.Hours() / 24)
 
 		if days > 7 {
