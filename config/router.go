@@ -2,6 +2,7 @@ package config
 
 import (
 	"library/app/controller/member"
+	"library/app/controller/book"
 	"library/app/controller/root"
 	"log"
 
@@ -16,11 +17,16 @@ func Router(db *gorm.DB) {
 	router.GET("/", rootController.Index)
 	v1 := router.Group("v1")
 	membersGroup := v1.Group("members")
-		{
-			memberController := member.NewController(db)
-			membersGroup.GET("list", memberController.List)
-		}
-		if err := router.Run(); err != nil {
-			log.Fatal(err)
-		}
+	{
+		memberController := member.NewController(db)
+		membersGroup.GET("list", memberController.List)
+	}
+	booksGroup := v1.Group("books")
+	{
+		bookController := book.NewController(db)
+		booksGroup.GET("list", bookController.List)
+	}
+	if err := router.Run(); err != nil {
+		log.Fatal(err)
+	}
 }

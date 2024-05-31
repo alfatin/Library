@@ -16,7 +16,21 @@ paths:
   /v1/members/list:
     get:
       tags:
-        - Member Services
+        - API
+      summary: List
+      responses:
+        200:
+          $ref: "#/components/responses/transactionList"
+        400:
+          $ref: "#/components/responses/400"
+        401:
+          $ref: "#/components/responses/401" 
+        500:
+          $ref: "#/components/responses/500"
+  /v1/books/list:
+    get:
+      tags:
+        - API
       summary: List
       responses:
         200:
@@ -118,16 +132,6 @@ components:
                 type: array
                 items:
                   type: object
-                  properties:
-                    merchant_name:
-                      type: string
-                      default: ""
-                    outlet_name:
-                      type: string
-                      default: ""
-                    omset:
-                      type: string
-                      default: ""
               message:
                 type: string
                 default: OK
@@ -145,18 +149,6 @@ components:
                 type: string
                 default: ""
                 minLength: 8
-    vocabCreat:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              indonesian:
-                type: string
-                default: ""
-              malay:
-                type: string
-                default: ""
   parameters:
     start:
       in: query
