@@ -9,3 +9,6 @@ run_db_migrate_down:
 
 run_seed:
 	psql -U postgres library < database/seed.sql
+
+run_algo:
+	go run algoritma/algoritma.go
